@@ -1,5 +1,6 @@
 package com.sparta.newspeed.entity;
 
+import com.sparta.newspeed.dto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -8,22 +9,31 @@ import lombok.*;
 @Setter
 @Table
 @NoArgsConstructor
-public class Post extends Timestamped {
+public class Post {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     //PK값 자동 생성
-    private Long id; // 게시글 고유 id
+    @Column(name = "post_id")
+    private Long postId; // 게시글 고유 id
     @Column (nullable = false, length = 500)
     private String title; // 제목
     @Column (nullable = false, length = 10)
-    private String username; // 작성자명
+    private String author; // 작성자명
     @Column (nullable = false, length = 1000)
     private String contents; // 작성내용
 
-    public Post(String title, String username, String contents) {
+    //setAuthor
+    @ManyToOne
+    @JoinColumn(name = "user_id")
+    private User username;
+
+
+    public Post(String title, String author, String contents) {
         this.title = title;
-        this.username = username;
+        this.author = author;
         this.contents = contents;
     }
+
+
 }

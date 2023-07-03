@@ -5,7 +5,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+
 @Repository
-public interface PostRepository extends JpaRepository<Post, Long>{
-    List<Post> findAllByCreateAtByModifiedAtDesc(); //내림차순 정렬
+public interface PostRepository extends JpaRepository<Post, Long> {
+    List<Post> findAllByOrderByModifiedAtDesc(); //내림차순 정렬
 }
