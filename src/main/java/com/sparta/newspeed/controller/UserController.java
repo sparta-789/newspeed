@@ -1,5 +1,6 @@
 package com.sparta.newspeed.controller;
 
+
 import com.sparta.newspeed.dto.ApiResponseDto;
 import com.sparta.newspeed.dto.UserResponseDto;
 import com.sparta.newspeed.dto.UserUpdateRequestDto;
@@ -19,6 +20,32 @@ public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
+    //로그인
+    @PostMapping("/auth/login")
+    public ResponseEntity<ApiResponseDto> login(@RequestBody AuthRequestDto loginRequestDto, HttpServletResponse response) {
+        try {
+            userService.login(loginRequestDto);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(new ApiResponseDto("회원을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST.value()));
+        }
+
+        // JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
+        response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(loginRequestDto.getUsername(), loginRequestDto.getRole()));
+
+        return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));}
+
+    @PostMapping("/auth/signup")
+    public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
+
+        try {
+            userService.signup(requestDto);
+        } catch (IllegalArgumentException e) { // 중복된 username이 있는 경우
+            ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
+        }
+
+        return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 완료 되었습니다.", HttpStatus.CREATED.value()));
+    }
+
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id){
         return ResponseEntity.ok().body(userService.getUserById(id));
@@ -30,8 +57,9 @@ public class UserController {
     }
 
     @DeleteMapping("users/{id}")
-    public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long id,@AuthenticationPrincipal UserDetailsImpl userDetails){
-        userService.deleteUser(id,userDetails.getUser());
+    public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long id,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.deleteUser(id, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("삭제 완료", HttpStatus.OK.value()));
     }
+
 }
