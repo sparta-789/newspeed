@@ -1,5 +1,6 @@
 package com.sparta.newspeed.auth;
 
+import com.sparta.newspeed.jwt.JwtUtil;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -16,7 +17,11 @@ import java.net.URLEncoder;
 @RequestMapping("/api")
 public class AuthController {
     public static final String AUTHORIZATION_HEADER = "Authorization";
+    private final JwtUtil jwtUtil;
 
+    public AuthController(JwtUtil jwtUtil) {
+        this.jwtUtil = jwtUtil;
+    }
 
 
     // 쿠키 생성
