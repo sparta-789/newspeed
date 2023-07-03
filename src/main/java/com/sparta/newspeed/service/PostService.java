@@ -3,7 +3,9 @@ package com.sparta.newspeed.service;
 import com.sparta.newspeed.dto.PostRequestDto;
 import com.sparta.newspeed.dto.PostResponseDto;
 import com.sparta.newspeed.entity.Post;
+import com.sparta.newspeed.entity.Timestamped;
 import com.sparta.newspeed.entity.User;
+import com.sparta.newspeed.jwt.JwtUtil;
 import com.sparta.newspeed.repository.PostRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,16 +18,29 @@ import org.springframework.web.server.ResponseStatusException;
 public class PostService {
     private final PostRepository postRepository;
     private final UserService userService;
+    private final JwtUtil jwtUtil;
+    private final Timestamped timestamped;
 
     //게시글 작성 API
     @Transactional
     public PostResponseDto createdPost(PostRequestDto requestDto){
         User currentUser  = userService.getCurrentUser();// 현재 로그인한 사용자 정보 가져오기
+        //JWT 토큰 검증
+        if (!jwtUtil.validateToken(requestDto.getToken())) {
+            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+        }
+
+        //사용자 인증
+        String username = jwtUtil.getUserInfoFromToken(requestDto.getToken()).getSubject();
+        if (!username.equals(currentUser.getUsername())) {
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "게시글 작성 권한이 없습니다.");
+        }
+
         Post post = new Post(requestDto.getTitle(), currentUser.getUsername(), requestDto.getContents());
 
         Post savedPost = postRepository.save(post);
 
-        return new PostResponseDto(savedPost.getPostId(), savedPost.getTitle(), savedPost.getAuthor(), savedPost.getContents(), savedPost.getcreatdAt());
+        return new PostResponseDto(savedPost.getPostId(), savedPost.getTitle(), savedPost.getAuthor(), savedPost.getContents(), savedPost.getCreatedAt());
 
 
 

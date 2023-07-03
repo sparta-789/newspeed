@@ -4,12 +4,14 @@ import com.sparta.newspeed.dto.PostRequestDto;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Getter
 @Setter
 @Table
 @NoArgsConstructor
-public class Post {
+public class Post extends Timestamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,6 +25,7 @@ public class Post {
     @Column (nullable = false, length = 1000)
     private String contents; // 작성내용
 
+
     //setAuthor
     @ManyToOne
     @JoinColumn(name = "user_id")
@@ -33,6 +36,7 @@ public class Post {
         this.title = title;
         this.author = author;
         this.contents = contents;
+
     }
 
 
