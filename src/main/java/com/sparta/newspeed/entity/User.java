@@ -1,12 +1,14 @@
 package com.sparta.newspeed.entity;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
 @NoArgsConstructor
+@EqualsAndHashCode
 @Table(name = "user")
 public class User {
     @Id
