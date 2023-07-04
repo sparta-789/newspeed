@@ -1,24 +1,27 @@
 package com.sparta.newspeed.dto;
 
+import com.sparta.newspeed.entity.Post;
 import lombok.Getter;
+import lombok.Setter;
+
 import java.time.LocalDateTime;
 
-
 @Getter
-public class PostResponseDto {    // 게시물 조회 요청에 대한 응답으로 사용
-    private Long postId;
+@Setter
+public class PostResponseDto {
+    private Long id;
     private String title;
-    private String author;
-    private String contents;
-    private LocalDateTime createdAt;
-//    private LocalDateTime modifiedAt; 수정시간 - 상인님 코드
+    private String content;
+    private LocalDateTime createAt;
+    private LocalDateTime modifiedAt;
+    private String username;
 
-    public PostResponseDto(Long postId, String title, String author, String contents, LocalDateTime createdAt) {
-        this.postId = this.postId;
-        this.title = this.title;
-        this.author = this.author;
-        this.contents = this.contents;
-        this.createdAt = this.createdAt;
-//        this.modifiedAt = modifiedAt;
+    public PostResponseDto(Post post) {
+        this.id = post.getId();
+        this.title = post.getTitle();
+        this.content = post.getContent();
+        this.createAt = post.getCreatedAt();
+        this.modifiedAt = post.getModifiedAt();
+        this.username = post.getUser().getUsername();
     }
 }

@@ -23,6 +23,6 @@ public class SignupRequestDto {
 
     private boolean admin = false;
     private String adminToken = "";
-    private UserRoleEnum role;
+    //private UserRoleEnum role;
 
 }

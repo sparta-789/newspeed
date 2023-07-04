@@ -1,5 +1,6 @@
 package com.sparta.newspeed.controller;
 
+import com.sparta.newspeed.dto.PostListResponseDto;
 import com.sparta.newspeed.dto.PostRequestDto;
 import com.sparta.newspeed.dto.PostResponseDto;
 import com.sparta.newspeed.security.UserDetailsImpl;
@@ -10,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.concurrent.RejectedExecutionException;
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -22,6 +24,30 @@ public class PostController {
     public ResponseEntity<PostResponseDto> createdPost(@RequestBody PostRequestDto requestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         PostResponseDto createdPost = postService.createdPost(requestDto, userDetails);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+    }
+
+    @GetMapping("/posts")
+    public ResponseEntity<PostListResponseDto> getPosts() {
+        PostListResponseDto result = postService.getPosts();
+
+        return ResponseEntity.ok().body(result);
+    }
+
+    @GetMapping("/posts/{id}")
+    public ResponseEntity<PostResponseDto> getPostById(@PathVariable Long id) {
+        PostResponseDto result = postService.getPostById(id);
+
+        return ResponseEntity.ok().body(result);
+    }
+
+    @PutMapping("/posts/{id}")
+    public ResponseEntity<PostResponseDto> updatePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id, @RequestBody PostRequestDto requestDto) {
+        try {
+            PostResponseDto result = postService.updatePost(id, requestDto, userDetails.getUser());
+            return ResponseEntity.ok().body(result);
+        } catch (RejectedExecutionException e) {
+            return ResponseEntity.badRequest().build();
+        }
     }
 
     // 선택한 게시글 삭제 API
