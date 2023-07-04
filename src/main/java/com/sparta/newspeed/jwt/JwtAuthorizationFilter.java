@@ -47,6 +47,15 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
 
                 return;
             }
+            // 블랙리스트에 존재하는 토큰일 경우 조건문에 true 입력, 로그아웃된 토큰 메세지와  인증불가 코드 반환
+            if (jwtUtil.isTokenBlacklisted(tokenValue)) {
+                ApiResponseDto responseDto = new ApiResponseDto("로그아웃된 토큰입니다.", HttpStatus.UNAUTHORIZED.value());
+                res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                res.setContentType("application/json; charset=UTF-8");
+                res.getWriter().write(objectMapper.writeValueAsString(responseDto));
+                return;
+            }
+
             Claims info = jwtUtil.getUserInfoFromToken(tokenValue);
 
             try {
@@ -74,6 +83,4 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         UserDetails userDetails = userDetailsService.loadUserByUsername(username);
         return new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
     }
-
-
 }

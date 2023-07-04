@@ -24,12 +24,10 @@ public class Post extends Timestamped {
     @Column(nullable = false, length = 1000)
     private String contents; // 작성내용
 
-
     //setAuthor
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
-
 
     public Post(String title, User user, String contents) {
         this.title = title;
@@ -38,5 +36,4 @@ public class Post extends Timestamped {
         this.user = user;
 
     }
-
 }
