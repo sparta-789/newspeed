@@ -21,6 +21,7 @@ public class UserController {
     private final JwtUtil jwtUtil;
 
     //회원가입
+    //Todo 회원가입 시 디비에 중복으로 쌓이지는 않지만 예외메시지가 출력되지 않음
     @PostMapping("/auth/signup")
     public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
 
@@ -34,6 +35,7 @@ public class UserController {
     }
 
     //로그인
+    //Todo USerService 에서는 아이디와 비밀번호가 다른 경우 각각 예외메시지 처리를 하고 있으나 Controller 에서는 ID/PW 예외메시지가 묶여서 한번에 처리됨
     @PostMapping("/auth/login")
     public ResponseEntity<ApiResponseDto> login(@RequestBody AuthRequestDto loginRequestDto, HttpServletResponse response) {
         try {
@@ -47,16 +49,20 @@ public class UserController {
 
         return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));}
 
+    //유저 조회
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id){
         return ResponseEntity.ok().body(userService.getUserById(id));
     }
 
+    //유저 수정
+    //Todo 비밀번호 변경 시 패스워드 2번 확인받는 작업이 실행이 되는지는 불분명
     @PutMapping("/users")
     public ResponseEntity<UserResponseDto> updateUser(@RequestBody UserUpdateRequestDto updateRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ResponseEntity.ok().body(userService.updateUser(updateRequestDto,userDetails.getUser()));
     }
 
+    //유저 삭제
     @DeleteMapping("users/{id}")
     public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long id,@AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.deleteUser(id, userDetails.getUser());

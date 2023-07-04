@@ -31,10 +31,11 @@ public class Post extends Timestamped {
     private User user;
 
 
-    public Post(String title, String author, String contents) {
+    public Post(String title, User user, String contents) {
         this.title = title;
-        this.author = author;
+        this.author = user.getUsername();
         this.contents = contents;
+        this.user = user;
 
     }
 

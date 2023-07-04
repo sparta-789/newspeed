@@ -25,23 +25,24 @@ public class PostService {
     private final JwtUtil jwtUtil;
 
     //게시글 작성 API
+    //Todo 토큰 검증 재확인
     @Transactional
     public PostResponseDto createdPost(PostRequestDto requestDto, UserDetailsImpl userDetails){
-// JWT 토큰 검증
-        if (!jwtUtil.validateToken(requestDto.getToken())) {
-            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
-        }
+    // JWT 토큰 검증
+//        if (!jwtUtil.validateToken(requestDto.getToken())) {
+//            throw new ResponseStatusException(HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
+//        }
 
         // 사용자 인증
-        User currentUser = userDetails.getUser();
-        String username = jwtUtil.getUserInfoFromToken(requestDto.getToken()).getSubject();
-        if (!username.equals(currentUser.getUsername())) {
-            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "게시글 작성 권한이 없습니다.");
-        }
+        User user = userDetails.getUser();
+//        String username = jwtUtil.getUserInfoFromToken(requestDto.getToken()).getSubject();
+//        if (!username.equals(currentUser.getUsername())) {
+//            throw new ResponseStatusException(HttpStatus.FORBIDDEN, "게시글 작성 권한이 없습니다.");
+//        }
 
-        Post post = new Post(requestDto.getTitle(), currentUser.getUsername(), requestDto.getContents());
+        Post post = new Post(requestDto.getTitle(), user, requestDto.getContents());
 
-        return new PostResponseDto(post);
+        return new PostResponseDto(postRepository.save(post));
 
     }
 

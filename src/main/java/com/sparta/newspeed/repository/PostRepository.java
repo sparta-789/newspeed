@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface PostRepository extends JpaRepository<Post, Long> {
     List<Post> findAllByOrderByModifiedAtDesc(); //내림차순 정렬
+
+    Post save(Post post);
 }
