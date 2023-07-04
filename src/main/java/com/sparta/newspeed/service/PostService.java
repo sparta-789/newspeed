@@ -25,7 +25,7 @@ public class PostService {
     private final JwtUtil jwtUtil;
 
     //게시글 작성 API
-    //Todo 토큰 검증 재확인
+
     @Transactional
     public PostResponseDto createdPost(PostRequestDto requestDto, UserDetailsImpl userDetails){
     // JWT 토큰 검증

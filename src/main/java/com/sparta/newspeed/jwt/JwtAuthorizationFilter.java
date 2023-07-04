@@ -33,7 +33,7 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
         this.userDetailsService = userDetailsService;
         this.objectMapper = objectMapper;
     }
-
+    //로그인 토큰없이 시도 시 로그인해라 메세지 출력
     @Override
     protected void doFilterInternal(HttpServletRequest req, HttpServletResponse res, FilterChain filterChain) throws ServletException, IOException {
         String tokenValue = jwtUtil.getJwtFromHeader(req);
@@ -57,6 +57,13 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
         }
+        /*else{
+            ApiResponseDto responseDto = new ApiResponseDto("토큰이 없습니다. 먼저 로그인하세요.", HttpStatus.BAD_REQUEST.value());
+            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            res.setContentType("application/json; charset=UTF-8");
+            res.getWriter().write(objectMapper.writeValueAsString(responseDto));
+            return;
+        }*/
         filterChain.doFilter(req, res);
     }
 
