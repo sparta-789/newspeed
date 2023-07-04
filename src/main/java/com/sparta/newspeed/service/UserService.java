@@ -6,7 +6,9 @@ import com.sparta.newspeed.dto.UserResponseDto;
 import com.sparta.newspeed.dto.UserUpdateRequestDto;
 import com.sparta.newspeed.entity.User;
 import com.sparta.newspeed.entity.UserRoleEnum;
+import com.sparta.newspeed.entity.TokenBlacklist;
 import com.sparta.newspeed.jwt.JwtUtil;
+import com.sparta.newspeed.repository.TokenBlacklistRepository;
 import com.sparta.newspeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -19,11 +21,20 @@ import java.util.concurrent.RejectedExecutionException;
 @RequiredArgsConstructor
 public class UserService {
     private final UserRepository userRepository;
+    // BlackList 를 저장할 Repository
+    private final TokenBlacklistRepository tokenBlacklistRepository;
     private final PasswordEncoder passwordEncoder;
-    private final JwtUtil jwtUtil;
 
     // ADMIN_TOKEN
     private final String ADMIN_TOKEN = "AAABnvxRVklrnYxKZ0aHgTBcXukeZygoC";
+
+    // 로그아웃
+    @Transactional
+    public void logout(String token) {
+        // 토큰을 블랙리스트에 추가
+        TokenBlacklist tokenBlacklist = new TokenBlacklist(token);
+        tokenBlacklistRepository.save(tokenBlacklist);
+    }
 
     public void login(AuthRequestDto requestDto) {
         String username = requestDto.getUsername();
@@ -108,10 +119,3 @@ public class UserService {
         return userRepository.findById(id).orElseThrow(() -> new IllegalArgumentException("등록된 사용자가 없습니다."));
     }
 }
-
-
-
-
-
-
-

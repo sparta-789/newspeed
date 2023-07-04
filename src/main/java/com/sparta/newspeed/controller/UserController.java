@@ -50,6 +50,24 @@ public class UserController {
 
         return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));}
 
+
+    // 로그아웃
+    @PostMapping("/logout")
+    // 헤더에서 Authorization 받아오기
+    public ResponseEntity<ApiResponseDto> logout(@RequestHeader("Authorization") String authorizationHeader) {
+        String token = extractTokenFromHeader(authorizationHeader);
+        // 로그아웃 처리 수행
+        userService.logout(token);
+        return ResponseEntity.ok().body(new ApiResponseDto("로그아웃 성공", HttpStatus.OK.value()));
+    }
+    // 헤더 값에서 토큰 반환
+    private String extractTokenFromHeader(String authorizationHeader) {
+        if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
+            return authorizationHeader.substring(7);
+        }
+        return null;
+    }
+
     //유저 조회
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id){

@@ -1,15 +1,17 @@
 package com.sparta.newspeed.jwt;
 
 
+import com.sparta.newspeed.entity.TokenBlacklist;
 import com.sparta.newspeed.entity.UserRoleEnum;
+import com.sparta.newspeed.repository.TokenBlacklistRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.annotation.PostConstruct;
 import jakarta.servlet.http.HttpServletRequest;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import org.springframework.util.StringUtils;
@@ -20,7 +22,6 @@ import java.util.Date;
 
 @Slf4j(topic = "JwtUtil")
 @Component
-@RequiredArgsConstructor
 public class JwtUtil {
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
@@ -30,6 +31,10 @@ public class JwtUtil {
     public static final String BEARER_PREFIX = "Bearer ";
     // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
+
+    @Autowired
+    private TokenBlacklistRepository tokenBlacklistRepository;
+
 
     @Value("${jwt.secret.key}") // Base64 Encode 한 SecretKey
     private String secretKey;
@@ -88,5 +93,10 @@ public class JwtUtil {
     // 토큰에서 사용자 정보 가져오기
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
+    }
+// 블랙리스트에 토큰이 있는지 확인, 존재하면 != null 즉 true 반환
+    public boolean isTokenBlacklisted(String tokenValue) {
+        TokenBlacklist tokenBlacklist = tokenBlacklistRepository.findByToken(tokenValue).orElse(null);
+        return tokenBlacklist != null;
     }
 }
