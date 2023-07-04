@@ -40,9 +40,9 @@ public class PostService {
         }
 
         Post post = new Post(requestDto.getTitle(), currentUser.getUsername(), requestDto.getContents());
-        Post savedPost = postRepository.save(post);
 
-        return new PostResponseDto(savedPost.getPostId(), savedPost.getTitle(), savedPost.getAuthor(), savedPost.getContents(), savedPost.getCreatedAt());
+        return new PostResponseDto(post);
+
     }
 
     public PostListResponseDto getPosts() {
@@ -66,7 +66,7 @@ public class PostService {
             throw new IllegalArgumentException("권한이 없습니다.");
         }
         post.setTitle(requestDto.getTitle());
-        post.setContent(requestDto.getContent());
+        post.setContents(requestDto.getContents());
 
         return new PostResponseDto(post);
     }
