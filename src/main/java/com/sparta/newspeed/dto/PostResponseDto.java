@@ -11,17 +11,19 @@ import java.time.LocalDateTime;
 public class PostResponseDto {
     private Long id;
     private String title;
-    private String content;
+    private String contents;
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
     private String username;
 
     public PostResponseDto(Post post) {
-        this.id = post.getId();
+        this.id = post.getPostId();
         this.title = post.getTitle();
-        this.content = post.getContent();
+        this.contents = post.getContents();
         this.createAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
         this.username = post.getUser().getUsername();
     }
+
+
 }
