@@ -1,11 +1,9 @@
 package com.sparta.newspeed.service;
 
 import com.sparta.newspeed.dto.AuthRequestDto;
-import com.sparta.newspeed.entity.User;
-import com.sparta.newspeed.jwt.JwtUtil;
-import com.sparta.newspeed.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
 import com.sparta.newspeed.dto.SignupRequestDto;
+import com.sparta.newspeed.dto.UserResponseDto;
+import com.sparta.newspeed.dto.UserUpdateRequestDto;
 import com.sparta.newspeed.entity.User;
 import com.sparta.newspeed.entity.UserRoleEnum;
 import com.sparta.newspeed.jwt.JwtUtil;
@@ -13,6 +11,9 @@ import com.sparta.newspeed.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+
+import java.util.concurrent.RejectedExecutionException;
 
 @Service
 @RequiredArgsConstructor
@@ -69,25 +70,27 @@ public class UserService {
 
     @Transactional
     public UserResponseDto updateUser(UserUpdateRequestDto updateRequestDto, User user) {
+        User check=findUser(updateRequestDto.getId());
         //admin 혹은 작성자인지 확인
-        if (!(findUser(updateRequestDto.getId()).equals(user)) || !user.getRole().equals(UserRoleEnum.ADMIN)) {
+        if (!(user.getRole().equals(UserRoleEnum.ADMIN)||check.getId().equals(user.getId()) )) { //admin이 아니거나 로그인한 userid와 requestdto의 userid가 다를 경우
             throw new SecurityException("유저를 수정할 권한이 없습니다.");
         }
 
         //새 비밀번호가 존재하고, 기존 비밀번호가 일치하면 비밀번호 변경
-        if (updateRequestDto.getNewPassword() != null && !user.getPassword().equals(updateRequestDto.getPassword())) {
-            user.updatePassword(passwordEncoder.encode(updateRequestDto.getNewPassword()));
+        if (updateRequestDto.getNewPassword() != null && !check.getPassword().equals(updateRequestDto.getPassword())) {
+            check.updatePassword(passwordEncoder.encode(updateRequestDto.getNewPassword()));
         }
-        user.updateUser(updateRequestDto);
-        return new UserResponseDto(user);
+        check.updateUser(updateRequestDto);
+        return new UserResponseDto(check);
     }
 
     @Transactional
     public void deleteUser(Long id, User user) {
-        if (!findUser(id).equals(user)) {
+        User check=findUser(id);
+        if (!check.getId().equals(user.getId())) {
             throw new RejectedExecutionException();
         }
-        userRepository.delete(user);
+        userRepository.delete(check);
     }
 
     //id에 해당하는 유저 조희

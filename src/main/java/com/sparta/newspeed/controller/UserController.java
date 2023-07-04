@@ -1,12 +1,12 @@
 package com.sparta.newspeed.controller;
 
 
-import com.sparta.newspeed.dto.ApiResponseDto;
-import com.sparta.newspeed.dto.UserResponseDto;
-import com.sparta.newspeed.dto.UserUpdateRequestDto;
+import com.sparta.newspeed.dto.*;
 import com.sparta.newspeed.jwt.JwtUtil;
 import com.sparta.newspeed.security.UserDetailsImpl;
 import com.sparta.newspeed.service.UserService;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -19,6 +19,19 @@ import org.springframework.web.bind.annotation.*;
 public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
+
+    //회원가입
+    @PostMapping("/auth/signup")
+    public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
+
+        try {
+            userService.signup(requestDto);
+        } catch (IllegalArgumentException e) { // 중복된 username이 있는 경우
+            ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
+        }
+
+        return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 완료 되었습니다.", HttpStatus.CREATED.value()));
+    }
 
     //로그인
     @PostMapping("/auth/login")
@@ -33,18 +46,6 @@ public class UserController {
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(loginRequestDto.getUsername(), loginRequestDto.getRole()));
 
         return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));}
-
-    @PostMapping("/auth/signup")
-    public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
-
-        try {
-            userService.signup(requestDto);
-        } catch (IllegalArgumentException e) { // 중복된 username이 있는 경우
-            ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
-        }
-
-        return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 완료 되었습니다.", HttpStatus.CREATED.value()));
-    }
 
     @GetMapping("/users/{id}")
     public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id){
