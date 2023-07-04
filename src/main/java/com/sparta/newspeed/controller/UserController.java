@@ -1,36 +1,40 @@
 package com.sparta.newspeed.controller;
 
 
-import com.sparta.newspeed.dto.ApiResponseDto;
-import com.sparta.newspeed.dto.AuthRequestDto;
+import com.sparta.newspeed.dto.*;
 import com.sparta.newspeed.jwt.JwtUtil;
+import com.sparta.newspeed.security.UserDetailsImpl;
 import com.sparta.newspeed.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
-
-import com.sparta.newspeed.dto.ApiResponseDto;
-import com.sparta.newspeed.dto.SignupRequestDto;
-import com.sparta.newspeed.service.UserService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
-@RequestMapping("/api/auth")
+@RestController
+@RequestMapping("/api")
 @RequiredArgsConstructor
-
 public class UserController {
-
-    private final JwtUtil jwtUtil;
     private final UserService userService;
+    private final JwtUtil jwtUtil;
+
+    //회원가입
+    @PostMapping("/auth/signup")
+    public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
+
+        try {
+            userService.signup(requestDto);
+        } catch (IllegalArgumentException e) { // 중복된 username이 있는 경우
+            ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
+        }
+
+        return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 완료 되었습니다.", HttpStatus.CREATED.value()));
+    }
 
     //로그인
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public ResponseEntity<ApiResponseDto> login(@RequestBody AuthRequestDto loginRequestDto, HttpServletResponse response) {
         try {
             userService.login(loginRequestDto);
@@ -43,16 +47,20 @@ public class UserController {
 
         return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));}
 
-    @PostMapping("/signup")
-    public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
-
-        try {
-            userService.signup(requestDto);
-        } catch (IllegalArgumentException e) { // 중복된 username이 있는 경우
-            ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
-        }
-
-        return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 완료 되었습니다.", HttpStatus.CREATED.value()));
-
+    @GetMapping("/users/{id}")
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id){
+        return ResponseEntity.ok().body(userService.getUserById(id));
     }
+
+    @PutMapping("/users")
+    public ResponseEntity<UserResponseDto> updateUser(@RequestBody UserUpdateRequestDto updateRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        return ResponseEntity.ok().body(userService.updateUser(updateRequestDto,userDetails.getUser()));
+    }
+
+    @DeleteMapping("users/{id}")
+    public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long id,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        userService.deleteUser(id, userDetails.getUser());
+        return ResponseEntity.ok().body(new ApiResponseDto("삭제 완료", HttpStatus.OK.value()));
+    }
+
 }

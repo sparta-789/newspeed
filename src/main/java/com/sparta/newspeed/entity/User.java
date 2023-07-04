@@ -1,5 +1,6 @@
 package com.sparta.newspeed.entity;
 
+import com.sparta.newspeed.dto.UserUpdateRequestDto;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -14,19 +15,19 @@ public class User {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(name = "name", nullable = false, unique = true)
+    @Column(name = "user_name", nullable = false, unique = true)
     private String username;
 
-    @Column(name = "user_pwd", nullable = false)
+    @Column(name = "user_password", nullable = false)
     private String password;
 
-    @Column(nullable = false)
+    @Column(name = "user_email", nullable = false)
     private String email;
 
-    @Column(name = "self_introduction",nullable = true)
+    @Column(name = "self_introduction")
     private String selfIntroduction;
 
-    @Column(nullable = false)
+    @Column(name = "user_role", nullable = false)
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
@@ -35,5 +36,15 @@ public class User {
         this.password = password;
         this.email = email;
         this.role = role;
+    }
+
+    public void updateUser(UserUpdateRequestDto updateRequestDto) {
+        this.username = updateRequestDto.getUsername();
+        this.email = updateRequestDto.getEmail();
+        this.selfIntroduction = updateRequestDto.getIntro();
+    }
+
+    public void updatePassword(String newPassword) {
+        this.password = newPassword;
     }
 }
