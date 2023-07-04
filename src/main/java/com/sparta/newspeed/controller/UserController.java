@@ -21,14 +21,14 @@ public class UserController {
     private final JwtUtil jwtUtil;
 
     //회원가입
-    //Todo 회원가입 시 디비에 중복으로 쌓이지는 않지만 예외메시지가 출력되지 않음
     @PostMapping("/auth/signup")
     public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
 
         try {
             userService.signup(requestDto);
         } catch (IllegalArgumentException e) { // 중복된 username이 있는 경우
-            ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
+            return ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
+
         }
 
         return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 완료 되었습니다.", HttpStatus.CREATED.value()));
@@ -42,6 +42,7 @@ public class UserController {
             userService.login(loginRequestDto);
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(new ApiResponseDto("회원을 찾을 수 없습니다.", HttpStatus.BAD_REQUEST.value()));
+            //return ResponseEntity.badRequest().body(new ApiResponseDto(e.getLocalizedMessage(), HttpStatus.BAD_REQUEST.value()));
         }
 
         // JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
@@ -56,7 +57,6 @@ public class UserController {
     }
 
     //유저 수정
-    //Todo 비밀번호 변경 시 패스워드 2번 확인받는 작업이 실행이 되는지는 불분명
     @PutMapping("/users")
     public ResponseEntity<UserResponseDto> updateUser(@RequestBody UserUpdateRequestDto updateRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ResponseEntity.ok().body(userService.updateUser(updateRequestDto,userDetails.getUser()));

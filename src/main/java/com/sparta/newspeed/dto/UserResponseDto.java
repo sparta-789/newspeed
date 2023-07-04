@@ -12,17 +12,17 @@ import lombok.Setter;
 public class UserResponseDto {
     private Long id;
     private String username;
-    private String password;
+    //private String password;
     private String email;
     private String intro;
-    private UserRoleEnum role;
+    //private UserRoleEnum role;
 
     public UserResponseDto(User user) {
         this.id=user.getId();
         this.username=user.getUsername();
-        this.password=user.getPassword();
+      //  this.password=user.getPassword();
         this.email=user.getEmail();
         this.intro=user.getSelfIntroduction();
-        this.role=user.getRole();
+        //this.role=user.getRole();
     }
 }
