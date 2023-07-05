@@ -41,6 +41,7 @@ public class PostService {
         return new PostResponseDto(postRepository.save(post));
     }
 
+
     public PostListResponseDto getPosts() {
         List<PostResponseDto> postList = postRepository.findAll().stream()
                 .map(PostResponseDto::new)
