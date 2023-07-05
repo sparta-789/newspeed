@@ -8,10 +8,13 @@ import com.sparta.newspeed.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.view.RedirectView;
 
 @RestController
 @RequestMapping("/api")
@@ -20,7 +23,23 @@ public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
 
-    //회원가입
+//    @Controller
+    //Todo 회원가입이 성공적으로 완료되면  리다이렉션할 URL을 클라이언트에게 전달
+//    public class SignupController {
+//        @Autowired
+//        private RedirectView mainPageRedirect; // 메인 페이지로 리다이렉션하기 위한 객체
+//
+//        @PostMapping("/signup")
+//        @ResponseBody
+//        public ResponseEntity<ApiResponseDto> signup(@RequestBody SignupRequestDto request) {
+//            // 받아온 회원 정보를 DB에 저장하는 로직을 구현해야 합니다.
+//            // 이 예시에서는 단순히 받아온 회원 정보를 출력하는 것으로 대체합니다.
+//
+//            // 회원가입이 성공적으로 완료되면 메인 페이지로 리다이렉션
+//            return ResponseEntity.ok
+
+
+            //회원가입
     @PostMapping("/auth/signup")
     public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
 
