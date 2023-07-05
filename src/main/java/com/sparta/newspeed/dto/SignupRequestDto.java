@@ -5,7 +5,6 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 import lombok.Setter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 @Setter
@@ -21,8 +20,8 @@ public class SignupRequestDto {
     @Email
     private String email;
 
+    private UserRoleEnum role;
+
     private boolean admin = false;
     private String adminToken = "";
-    //private UserRoleEnum role;
-
 }

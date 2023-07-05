@@ -1,15 +1,15 @@
 package com.sparta.newspeed.controller;
 
+import com.sparta.newspeed.dto.ApiResponseDto;
+import com.sparta.newspeed.dto.CommentRequestDto;
 import com.sparta.newspeed.dto.CommentResponseDto;
 import com.sparta.newspeed.security.UserDetailsImpl;
 import com.sparta.newspeed.service.CommentService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequiredArgsConstructor
@@ -27,7 +27,7 @@ public class CommentController {
     public ResponseEntity<ApiResponseDto> deleteComment(@AuthenticationPrincipal UserDetailsImpl details, @RequestBody CommentRequestDto requestDto) {
         try {
             commentService.deleteComment(details.getUser(), requestDto);
-            return ResponseEntity.status(204).body(new ApiResponseDto("삭제 되었습니다.", HttpStatus.NO_CONTENT.value()));
+            return ResponseEntity.ok().body(new ApiResponseDto("댓글 삭제 되었습니다.", HttpStatus.OK.value()));
         } catch (SecurityException e) {
             return ResponseEntity.badRequest().body(new ApiResponseDto("삭제 권한이 없습니다.", HttpStatus.BAD_REQUEST.value()));
         }
