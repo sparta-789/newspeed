@@ -1,0 +1,21 @@
+/* 헤더 스타일 */
+.header {
+    display: flex;
+    align-items: center;
+}
+
+/* 타이틀 스타일 */
+.title {
+    font-style: italic;
+    margin-right: 10px;
+}
+
+/* 네비게이션 링크 스타일 */
+.nav-link {
+    margin-right: 10px;
+}
+
+/* 첫 번째 네비게이션 링크에 왼쪽 여백 제거 */
+.nav-link:first-child {
+    margin-right: 0;
+}
