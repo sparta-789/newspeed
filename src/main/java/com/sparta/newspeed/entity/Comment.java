@@ -1,40 +1,44 @@
 package com.sparta.newspeed.entity;
 
+import com.sparta.newspeed.entity.Post;
+import com.sparta.newspeed.entity.Timestamped;
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 
 @Entity
 @Getter
-@Setter
 @Table(name = "comment")
+@AllArgsConstructor
 @NoArgsConstructor
-public class Comment extends Timestamped{
+@Setter
+public class Comment extends Timestamped {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "comment_id")
+    @Column(name = "c_id", nullable = false, updatable = false)
     private Long id;
 
-    @Column(nullable = false)
-    private String writer;
-
-    @Column(nullable = false)
+    @Column(name = "c_contents", nullable = false)
     private String contents;
 
-    @ManyToOne
-    @JoinColumn(name = "user_id")
+    @Column(name = "c_username", nullable = false, length = 12)
+    private String username;
+
+    //@JsonIgnore
+    //@JsonManagedReference
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "u_id", nullable = false)
     private User user;
 
-    @ManyToOne
-    @JoinColumn(name = "post_no")
-    private Post post;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "p_id", nullable = false, updatable = false)
+    public Post post;
 
-    public Comment(String writer, String contents, User user, Post post) {
-        this.writer = user.getUsername();
-        this.user = user;
+    public Comment(Post post, String contents, User user) {
         this.post = post;
         this.contents = contents;
+        this.username = user.getUsername();
+        this.user = user;
     }
 
     public void update(String contents) {
