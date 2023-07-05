@@ -5,6 +5,9 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
+import java.util.ArrayList;
+import java.util.List;
+
 @Entity
 @Getter
 @Setter
@@ -29,11 +32,18 @@ public class Post extends Timestamped {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "post")
+    private List<Comment> commentList = new ArrayList<>();
+
     public Post(String title, User user, String contents) {
         this.title = title;
         this.author = user.getUsername();
         this.contents = contents;
         this.user = user;
 
+    }
+
+    public void addCommentList(Comment comment) {
+        this.commentList.add(0,comment);
     }
 }
