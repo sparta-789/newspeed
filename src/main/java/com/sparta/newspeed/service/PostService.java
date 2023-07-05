@@ -76,7 +76,7 @@ public class PostService {
     public void addLikePost(Long postId, UserDetailsImpl userDetails) {
         String username = userDetails.getUser().getUsername();
         // postId와 username을 이용해서 사용자가 이미 Like를 눌렀는지 확인
-        boolean alreadyLiked = likedInfoRepository.existsByPostIdAndUsername(postId, username);
+//        boolean alreadyLiked = likedInfoRepository.findByPostIdAndUsernameAndStatus(postId, username, "liked").isPresent();
 
         //자신의 게시글에 좋아요 X
         Post post = postRepository.findById(postId)
@@ -84,29 +84,34 @@ public class PostService {
         if (post.getUser().getUsername().equals(username)) {
             throw new IllegalArgumentException("자신의 게시글에는 '좋아요'를 할 수 없습니다.");
         }
+        LikedInfo likedInfo = likedInfoRepository.findByPostIdAndUsername(postId, username).orElse(null);
 
-        if (alreadyLiked) {
-            // Like를 누른 상태라면 삭제
-            likedInfoRepository.deleteByPostIdAndUsername(postId, username);
+        if (likedInfo == null) {
+            // 좋아요 요청이 처음일 경우, 새로운 LikedInfo 생성
+            likedInfo = new LikedInfo(postId, username);
+            likedInfo.setStatus("liked");
         } else {
-            // list에 좋아요를 누른 user이름과 게시글 번호를 저장
-            LikedInfo likedInfo = new LikedInfo(postId, username);
-            likedInfoRepository.save(likedInfo);
+            if (likedInfo.getStatus().equals("canceled")) {
+                // 좋아요가 취소된 상태에서 요청 시 status를 "liked"로 변경
+                likedInfo.setStatus("liked");
+            } else {
+                // 이미 좋아요를 누른 상태에서 요청 시 status를 "canceled"로 변경
+                likedInfo.setStatus("canceled");
+            }
         }
-        // delete or sava에 따른 count 업데이트
+
+        likedInfoRepository.save(likedInfo);
+
         updateLikedCount(postId);
     }
+
     // count한 like 저장해주기
     private void updateLikedCount(Long postId) {
-        Integer likedCount = getLikedCountByPostId(postId);
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        Integer likedCount = likedInfoRepository.countByPostIdAndStatus(postId, "liked");
         post.setLikedCount(likedCount);
         postRepository.save(post);
-    }
-    // like count 해주기
-    public Integer getLikedCountByPostId(Long postId) {
-        return likedInfoRepository.countByPostId(postId);
     }
 
     //게시글 삭제 API
