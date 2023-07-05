@@ -49,6 +49,13 @@ public class PostController {
             return ResponseEntity.badRequest().build();
         }
     }
+    // 좋아요
+    @PutMapping("/posts/{id}/like")
+    public ResponseEntity<PostResponseDto> addLikePost(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long id) {
+        postService.addLikePost(id, userDetails);
+        PostResponseDto likedPost = postService.getPostById(id);
+        return ResponseEntity.ok().body(likedPost);
+    }
 
     // 선택한 게시글 삭제 API
     @DeleteMapping("/posts/{id}")

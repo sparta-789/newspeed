@@ -3,10 +3,12 @@ package com.sparta.newspeed.service;
 import com.sparta.newspeed.dto.PostListResponseDto;
 import com.sparta.newspeed.dto.PostRequestDto;
 import com.sparta.newspeed.dto.PostResponseDto;
+import com.sparta.newspeed.entity.LikedInfo;
 import com.sparta.newspeed.entity.Post;
 import com.sparta.newspeed.entity.User;
 import com.sparta.newspeed.entity.UserRoleEnum;
 import com.sparta.newspeed.jwt.JwtUtil;
+import com.sparta.newspeed.repository.LikedInfoRepository;
 import com.sparta.newspeed.repository.PostRepository;
 import com.sparta.newspeed.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,8 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
+    private final LikedInfoRepository likedInfoRepository;
+
     private final JwtUtil jwtUtil;
 
     //게시글 작성 API
@@ -49,8 +53,8 @@ public class PostService {
         return new PostListResponseDto(postList);
     }
 
-    public PostResponseDto getPostById(Long id) {
-        Post post = findPost(id);
+    public PostResponseDto getPostById(Long Id) {
+        Post post = findPost(Id);
 
         return new PostResponseDto(post);
     }
@@ -65,6 +69,44 @@ public class PostService {
         post.setContents(requestDto.getContents());
 
         return new PostResponseDto(post);
+    }
+
+    // post 좋아요
+    @Transactional
+    public void addLikePost(Long postId, UserDetailsImpl userDetails) {
+        String username = userDetails.getUser().getUsername();
+        // postId와 username을 이용해서 사용자가 이미 Like를 눌렀는지 확인
+        boolean alreadyLiked = likedInfoRepository.existsByPostIdAndUsername(postId, username);
+
+        //자신의 게시글에 좋아요 X
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        if (post.getUser().getUsername().equals(username)) {
+            throw new IllegalArgumentException("자신의 게시글에는 '좋아요'를 할 수 없습니다.");
+        }
+
+        if (alreadyLiked) {
+            // Like를 누른 상태라면 삭제
+            likedInfoRepository.deleteByPostIdAndUsername(postId, username);
+        } else {
+            // list에 좋아요를 누른 user이름과 게시글 번호를 저장
+            LikedInfo likedInfo = new LikedInfo(postId, username);
+            likedInfoRepository.save(likedInfo);
+        }
+        // delete or sava에 따른 count 업데이트
+        updateLikedCount(postId);
+    }
+    // count한 like 저장해주기
+    private void updateLikedCount(Long postId) {
+        Integer likedCount = getLikedCountByPostId(postId);
+        Post post = postRepository.findById(postId)
+                .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
+        post.setLikedCount(likedCount);
+        postRepository.save(post);
+    }
+    // like count 해주기
+    public Integer getLikedCountByPostId(Long postId) {
+        return likedInfoRepository.countByPostId(postId);
     }
 
     //게시글 삭제 API
