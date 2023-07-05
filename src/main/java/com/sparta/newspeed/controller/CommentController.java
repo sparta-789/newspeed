@@ -18,7 +18,6 @@ public class CommentController {
     private final CommentService commentService;
 
     //댓글 등록
-
     @PostMapping("/comments")
     public ResponseEntity<CommentResponseDto> createComment(@RequestBody com.sparta.newspeed.dto.CommentRequestDto commentRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         return ResponseEntity.ok().body(commentService.createComment(commentRequestDto,userDetails.getUser()));
