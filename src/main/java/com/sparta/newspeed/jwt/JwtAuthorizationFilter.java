@@ -66,13 +66,6 @@ public class JwtAuthorizationFilter extends OncePerRequestFilter {
                 return;
             }
         }
-        /*else{
-            ApiResponseDto responseDto = new ApiResponseDto("토큰이 없습니다. 먼저 로그인하세요.", HttpStatus.BAD_REQUEST.value());
-            res.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            res.setContentType("application/json; charset=UTF-8");
-            res.getWriter().write(objectMapper.writeValueAsString(responseDto));
-            return;
-        }*/
         filterChain.doFilter(req, res);
     }
 

@@ -4,6 +4,7 @@ package com.sparta.newspeed.controller;
 import com.sparta.newspeed.dto.*;
 import com.sparta.newspeed.jwt.JwtUtil;
 import com.sparta.newspeed.security.UserDetailsImpl;
+import com.sparta.newspeed.service.MailSenderService;
 import com.sparta.newspeed.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
@@ -11,27 +12,40 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+//@Controller
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
     private final JwtUtil jwtUtil;
+    private final MailSenderService mailSenderService;
 
     //회원가입
     @PostMapping("/auth/signup")
-    public ResponseEntity<ApiResponseDto> signup(@Valid @RequestBody SignupRequestDto requestDto) {
+    public ResponseEntity<ApiResponseDto> signup(@RequestBody SignupRequestDto requestDto) {
 
         try {
+            String authKey= mailSenderService.sendSimpleMessage(requestDto.getEmail());
+            requestDto.setAuthKey(authKey);
             userService.signup(requestDto);
-        } catch (IllegalArgumentException e) { // 중복된 username이 있는 경우
+        } catch (IllegalArgumentException e) { // 중복된 username 이 있는 경우
             return ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
-
         }
 
         return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 완료 되었습니다.", HttpStatus.CREATED.value()));
+    }
+
+    //메일 확인
+    @GetMapping("auth/confirmSignup")
+    public ResponseEntity<ApiResponseDto> viewConfirmEmail(@RequestParam String email,@RequestParam String authKey) {
+        userService.confirmEmail(email,authKey);
+
+        //return "redirect:/login";
+        return ResponseEntity.ok().body(new ApiResponseDto("이메일 인증 성공", HttpStatus.OK.value()));
     }
 
     //로그인
@@ -47,7 +61,8 @@ public class UserController {
         // JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(loginRequestDto.getUsername(), loginRequestDto.getRole()));
 
-        return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));}
+        return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));
+    }
 
 
     // 로그아웃
@@ -59,6 +74,7 @@ public class UserController {
         userService.logout(token);
         return ResponseEntity.ok().body(new ApiResponseDto("로그아웃 성공", HttpStatus.OK.value()));
     }
+
     // 헤더 값에서 토큰 반환
     private String extractTokenFromHeader(String authorizationHeader) {
         if (authorizationHeader != null && authorizationHeader.startsWith("Bearer ")) {
@@ -69,21 +85,20 @@ public class UserController {
 
     //유저 조회
     @GetMapping("/users/{id}")
-    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id){
+    public ResponseEntity<UserResponseDto> getUserById(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.getUserById(id));
     }
 
     //유저 수정
     @PutMapping("/users")
-    public ResponseEntity<UserResponseDto> updateUser(@RequestBody UserUpdateRequestDto updateRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails){
-        return ResponseEntity.ok().body(userService.updateUser(updateRequestDto,userDetails.getUser()));
+    public ResponseEntity<UserResponseDto> updateUser(@RequestBody UserUpdateRequestDto updateRequestDto, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        return ResponseEntity.ok().body(userService.updateUser(updateRequestDto, userDetails.getUser()));
     }
 
     //유저 삭제
     @DeleteMapping("users/{id}")
-    public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long id,@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.deleteUser(id, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("삭제 완료", HttpStatus.OK.value()));
     }
-
 }
