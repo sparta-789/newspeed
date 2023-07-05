@@ -35,7 +35,6 @@ public class UserController {
         } catch (IllegalArgumentException e) { // 중복된 username 이 있는 경우
             return ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
         }
-
         return ResponseEntity.status(201).body(new ApiResponseDto("회원가입 완료 되었습니다.", HttpStatus.CREATED.value()));
     }
 
@@ -49,7 +48,6 @@ public class UserController {
     }
 
     //로그인
-    //Todo USerService 에서는 아이디와 비밀번호가 다른 경우 각각 예외메시지 처리를 하고 있으나 Controller 에서는 ID/PW 예외메시지가 묶여서 한번에 처리됨
     @PostMapping("/auth/login")
     public ResponseEntity<ApiResponseDto> login(@RequestBody AuthRequestDto loginRequestDto, HttpServletResponse response) {
         try {

@@ -17,7 +17,9 @@ import org.springframework.security.config.annotation.web.configurers.AbstractHt
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.AccessDeniedHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 @Configuration
@@ -27,6 +29,8 @@ public class WebSecurityConfig {
     private final JwtUtil jwtUtil;
     private final UserDetailsServiceImpl userDetailsService;
     private final ObjectMapper objectMapper;
+    private AuthenticationEntryPoint jwtAuthenticationEntryPoint;
+    private AccessDeniedHandler customAccessDeniedHandler;
 
     @Bean
     public PasswordEncoder passwordEncoder() {
@@ -70,6 +74,8 @@ public class WebSecurityConfig {
         // 필터 관리
         http.addFilterBefore(jwtAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class);
 
+        http.exceptionHandling((exceptionHandling)->exceptionHandling.accessDeniedHandler(customAccessDeniedHandler));
+        http.exceptionHandling((exceptionHandling)->exceptionHandling.authenticationEntryPoint(jwtAuthenticationEntryPoint));
         return http.build();
     }
 }
