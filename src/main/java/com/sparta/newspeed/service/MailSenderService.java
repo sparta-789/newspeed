@@ -26,6 +26,7 @@ public class MailSenderService {
         this.mailSender = mailSender;
     }
 
+    //메세지 생성해서 내용을 구성
     private MimeMessage createMessage(String email) {
         log.info("보내는 대상 : " + email);
         log.info("인증 번호 : " + authKey);
@@ -45,6 +46,7 @@ public class MailSenderService {
         return mail;
     }
 
+    //랜덤값(a-zA-Z0-9)중에 8글자 조합
     public static String createKey() {
         StringBuilder key = new StringBuilder();
         Random rnd = new Random();
@@ -67,6 +69,7 @@ public class MailSenderService {
         return key.toString();
     }
 
+    //create method 에서 구성한 message 를 전송
     public String sendSimpleMessage(String email) {
         MimeMessage message = createMessage(email);
         try {//예외처리
