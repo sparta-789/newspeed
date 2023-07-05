@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>New Speed Post</title>
+</head>
+<body>
+
+<!-- 게시글 영역 -->
+<h2>게시글 작성</h2>
+<form action="/post" method="POST">
+    <label for="title">제목:</label>
+    <input type="text" id="title" name="title" required>
+    <br>
+    <label for="content">내용:</label>
+    <textarea id="content" name="content" required></textarea>
+    <br>
+    <button type="submit">글 작성</button>
+</form>
+<!-- 댓글 영역 -->
+<div>
+    <h2>댓글</h2>
+    <!-- 댓글 목록 -->
+    <ul id="comment-list">
+        <!-- 각 댓글 항목은 JavaScript로 동적으로 추가됩니다. -->
+    </ul>
+
+    <!-- 댓글 작성 폼 -->
+    <form id="comment-form">
+        <div>
+            <input type="text" id="comment-author" placeholder="작성자">
+        </div>
+        <div>
+            <textarea id="comment-content" placeholder="댓글 내용"></textarea>
+        </div>
+        <div>
+            <button type="submit">댓글 작성</button>
+        </div>
+    </form>
+</div>
+
+</body>
+</html>
