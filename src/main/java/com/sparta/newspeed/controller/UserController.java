@@ -7,15 +7,11 @@ import com.sparta.newspeed.security.UserDetailsImpl;
 import com.sparta.newspeed.service.MailSenderService;
 import com.sparta.newspeed.service.UserService;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.view.RedirectView;
 
 //@Controller
 @RestController
@@ -26,30 +22,14 @@ public class UserController {
     private final JwtUtil jwtUtil;
     private final MailSenderService mailSenderService;
 
-//    @Controller
-    //Todo 회원가입이 성공적으로 완료되면  리다이렉션할 URL을 클라이언트에게 전달
-//    public class SignupController {
-//        @Autowired
-//        private RedirectView mainPageRedirect; // 메인 페이지로 리다이렉션하기 위한 객체
-//
-//        @PostMapping("/signup")
-//        @ResponseBody
-//        public ResponseEntity<ApiResponseDto> signup(@RequestBody SignupRequestDto request) {
-//            // 받아온 회원 정보를 DB에 저장하는 로직을 구현해야 합니다.
-//            // 이 예시에서는 단순히 받아온 회원 정보를 출력하는 것으로 대체합니다.
-//
-//            // 회원가입이 성공적으로 완료되면 메인 페이지로 리다이렉션
-//            return ResponseEntity.ok
-
-
-            //회원가입
+    //회원가입
     @PostMapping("/auth/signup")
-    public ResponseEntity<ApiResponseDto> signup(@RequestBody SignupRequestDto requestDto) {
+    public ResponseEntity<ApiResponseDto> signup(@RequestBody SignupRequestDto requestDto) { //클라이언트로부터 SignupRequestDto 를 요청 RequestBody 로 받아와서 처리
 
         try {
             String authKey= mailSenderService.sendSimpleMessage(requestDto.getEmail());
             requestDto.setAuthKey(authKey);
-            userService.signup(requestDto);
+            userService.signup(requestDto); //회원 가입을 처리하기 위해 userService.signup(requestDto)를 호출
         } catch (IllegalArgumentException e) { // 중복된 username 이 있는 경우
             return ResponseEntity.badRequest().body(new ApiResponseDto("이미 존재하는 id 입니다. 다른 id를 입력해 주세요", HttpStatus.BAD_REQUEST.value()));
         }
@@ -58,8 +38,8 @@ public class UserController {
 
     //메일 확인
     @GetMapping("auth/confirmSignup")
-    public ResponseEntity<ApiResponseDto> viewConfirmEmail(@RequestParam String email,@RequestParam String authKey) {
-        userService.confirmEmail(email,authKey);
+    public ResponseEntity<ApiResponseDto> viewConfirmEmail(@RequestParam String email,@RequestParam String authKey) { //email 과 authKey 를 쿼리 파라미터(RequestParam)로 받아와서 처리
+        userService.confirmEmail(email,authKey); // 이메일 주소와 인증 키를 사용하여 사용자의 이메일 인증
 
         //return "redirect:/login";
         return ResponseEntity.ok().body(new ApiResponseDto("이메일 인증 성공", HttpStatus.OK.value()));
@@ -77,7 +57,7 @@ public class UserController {
         // JWT 생성 및 쿠키에 저장 후 Response 객체에 추가
         response.addHeader(JwtUtil.AUTHORIZATION_HEADER, jwtUtil.createToken(loginRequestDto.getUsername(), loginRequestDto.getRole()));
 
-        return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.CREATED.value()));
+        return ResponseEntity.ok().body(new ApiResponseDto("로그인 성공", HttpStatus.OK.value()));
     }
 
 

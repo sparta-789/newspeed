@@ -44,12 +44,11 @@ public class CommentController {
         }
     }
 
-    @PutMapping("/comments/like")
-    public ResponseEntity<PostResponseDto>
-    addLikeComment(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody CommentRequestDto requestDto) {
-        CommentService.addLikeComment(requestDto.getCommentId(), userDetails);
-        PostResponseDto likedComment = commentService.getCommentById(id);
-        return ResponseEntity.ok().body(likedComment);
-    }
-
+//    @PutMapping("/comments/like")
+//    public ResponseEntity<PostResponseDto>
+//    addLikeComment(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody CommentRequestDto requestDto) {
+//        CommentService.addLikeComment(requestDto.getCommentId(), userDetails);
+//        PostResponseDto likedComment = commentService.getCommentById(id);
+//        return ResponseEntity.ok().body(likedComment);
+//    }
 }

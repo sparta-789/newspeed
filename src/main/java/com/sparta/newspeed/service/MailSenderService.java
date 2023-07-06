@@ -16,9 +16,11 @@ import java.util.Random;
 @Service
 @Slf4j
 @RequiredArgsConstructor
-public class MailSenderService {
+public class MailSenderService { //이메일 전송을 처리하는 서비스 클래스
+    // spring Framework 에서 제공하는 이메일 전송을 위한 인터페이스
     private JavaMailSender mailSender;
 
+    // 8자리의 인증 키를 랜덤하게 생성하는 메서드
     public static String authKey = createKey();
 
     @Autowired
@@ -26,7 +28,7 @@ public class MailSenderService {
         this.mailSender = mailSender;
     }
 
-    //메세지 생성해서 내용을 구성
+    //전달된 이메일 주소를 사용하여 메세지 내용을 구성
     private MimeMessage createMessage(String email) {
         log.info("보내는 대상 : " + email);
         log.info("인증 번호 : " + authKey);
@@ -38,8 +40,8 @@ public class MailSenderService {
         try {
             mail.setSubject("뉴스피드 회원가입 인증 이메일", "utf-8");
             mail.setText(mailContent, "utf-8", "html");
-            mail.addRecipient(Message.RecipientType.TO, new InternetAddress(email));
-            mailSender.send(mail);
+            mail.addRecipient(Message.RecipientType.TO, new InternetAddress(email)); // 메일의 수신자를 추가하는 메서드
+            mailSender.send(mail); //메일을 전송 -> 본문에는 이메일 인증을 위한 링크가 포함
         } catch (MessagingException e) {
             e.printStackTrace();
         }
@@ -69,11 +71,12 @@ public class MailSenderService {
         return key.toString();
     }
 
-    //create method 에서 구성한 message 를 전송
+    // create method 에서 구성한 message 를 전송
+    // 메서드가 호출될 때마다 해당 인증 키가 반환
     public String sendSimpleMessage(String email) {
-        MimeMessage message = createMessage(email);
-        try {//예외처리
-            mailSender.send(message);
+
+        try { //예외처리
+            MimeMessage message = createMessage(email);
         } catch (MailException es) {
             es.printStackTrace();
             throw new IllegalArgumentException();

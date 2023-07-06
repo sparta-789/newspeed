@@ -38,6 +38,7 @@ public class UserService {
         tokenBlacklistRepository.save(tokenBlacklist);
     }
 
+    //로그인
     public void login(AuthRequestDto requestDto) {
         String username = requestDto.getUsername();
         String password = requestDto.getPassword();

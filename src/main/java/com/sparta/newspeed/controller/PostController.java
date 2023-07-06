@@ -63,5 +63,4 @@ public class PostController {
         String message = postService.deletePost(id, userDetails);
         return ResponseEntity.ok(message);
     }
-
 }

@@ -20,9 +20,10 @@ import java.security.Key;
 import java.util.Base64;
 import java.util.Date;
 
-@Slf4j(topic = "JwtUtil")
+@Slf4j(topic = "JwtUtil") // 로깅을 위한 Lombok 어노테이션
 @Component
-public class JwtUtil {
+public class JwtUtil { // JWT (JSON Web Token)을 생성하고 검증하는 클래스
+    // JwtUtil : JWT 토큰의 생성, 헤더에서 토큰 추출, 토큰의 유효성 검사, 토큰에서 사용자 정보 추출, 토큰 블랙리스트 확인 등의 기능을 제공
     // Header KEY 값
     public static final String AUTHORIZATION_HEADER = "Authorization";
     // 사용자 권한 값의 KEY
@@ -32,6 +33,8 @@ public class JwtUtil {
     // 토큰 만료시간
     private final long TOKEN_TIME = 60 * 60 * 1000L; // 60분
 
+    // 로그아웃 처리 시 토큰 블랙리스트에 대한 repository
+    // 토큰 블랙리스트 : 사용된 토큰을 사용하지 못하게 저장하여 관리함
     @Autowired
     private TokenBlacklistRepository tokenBlacklistRepository;
 
@@ -40,17 +43,15 @@ public class JwtUtil {
     private String secretKey;
     private Key key;
     private final SignatureAlgorithm signatureAlgorithm = SignatureAlgorithm.HS256;
-    
-    private static final Logger logger= LoggerFactory.getLogger("JWT 관련 로그");
 
 
-    @PostConstruct
+    @PostConstruct // 인스턴스 생성 및 의존성 주입이 완료된 후에 실행되어야 함
     public void init() {
         byte[] bytes = Base64.getDecoder().decode(secretKey);
         key = Keys.hmacShaKeyFor(bytes);
-    }
+    } // JwtUtil 인스턴스 생성 후 secretKey 값을 Base64 디코딩하여 key 를 초기화하는 역할
 
-    // 토큰 생성
+    // 주어진 사용자 이름과 권한 정보를 기반으로 JWT 토큰을 생성
     public String createToken(String username, UserRoleEnum role) {
         Date date = new Date();
 
@@ -64,20 +65,20 @@ public class JwtUtil {
                         .compact();
     }
 
-    // header 에서 JWT 가져오기
+    //  HTTP 요청의 헤더에서 JWT 토큰 가져오기
     public String getJwtFromHeader(HttpServletRequest request) {
-        String bearerToken = request.getHeader(AUTHORIZATION_HEADER);
-        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) {
+        String bearerToken = request.getHeader(AUTHORIZATION_HEADER); // AUTHORIZATION_HEADER : JWT 토큰을 HTTP 요청의 헤더에 포함시키기 위한 헤더의 이름
+        if (StringUtils.hasText(bearerToken) && bearerToken.startsWith(BEARER_PREFIX)) { // BEARER_PREFIX 상수는 이러한 접두사 문자열을 나타내며, JWT 토큰을 포함시킬 때 접두사와 토큰 값을 조합하여 사용
             return bearerToken.substring(7);
         }
         return null;
     }
 
-    // 토큰 검증
+    // 주어진 토큰의 유효성을 검사 (토큰 검증)
     public boolean validateToken(String token) {
         try {
-            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token);
-            return true;
+            Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token); // key 를 사용하여 토큰의 서명을 확인
+            return true; // 유효한 토큰인 경우
         } catch (SecurityException | MalformedJwtException | SignatureException e) {
             log.error("Invalid JWT signature, 유효하지 않는 JWT 서명 입니다.");
         } catch (ExpiredJwtException e) {
@@ -94,7 +95,7 @@ public class JwtUtil {
     public Claims getUserInfoFromToken(String token) {
         return Jwts.parserBuilder().setSigningKey(key).build().parseClaimsJws(token).getBody();
     }
-// 블랙리스트에 토큰이 있는지 확인, 존재하면 != null 즉 true 반환
+    // 블랙리스트에 토큰이 있는지 확인, 존재하면 != null 즉 true 반환
     public boolean isTokenBlacklisted(String tokenValue) {
         TokenBlacklist tokenBlacklist = tokenBlacklistRepository.findByToken(tokenValue).orElse(null);
         return tokenBlacklist != null;

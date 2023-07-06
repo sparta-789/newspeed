@@ -10,7 +10,7 @@ public enum UserRoleEnum {
         this.authority = authority;
     }
 
-    public String getAuthority() {
+    public String getAuthority() { //  해당 사용자 역할의 권한 값을 반환
         return this.authority;
     }
 
