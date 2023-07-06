@@ -3,12 +3,12 @@ package com.sparta.newspeed.service;
 import com.sparta.newspeed.dto.PostListResponseDto;
 import com.sparta.newspeed.dto.PostRequestDto;
 import com.sparta.newspeed.dto.PostResponseDto;
-import com.sparta.newspeed.entity.LikedInfo;
+import com.sparta.newspeed.entity.PostLikedInfo;
 import com.sparta.newspeed.entity.Post;
 import com.sparta.newspeed.entity.User;
 import com.sparta.newspeed.entity.UserRoleEnum;
 import com.sparta.newspeed.jwt.JwtUtil;
-import com.sparta.newspeed.repository.LikedInfoRepository;
+import com.sparta.newspeed.repository.PostLikedInfoRepository;
 import com.sparta.newspeed.repository.PostRepository;
 import com.sparta.newspeed.security.UserDetailsImpl;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostService {
     private final PostRepository postRepository;
-    private final LikedInfoRepository likedInfoRepository;
+    private final PostLikedInfoRepository postLikedInfoRepository;
 
     private final JwtUtil jwtUtil;
 
@@ -75,7 +75,7 @@ public class PostService {
     // post 좋아요
     @Transactional
     public void addLikePost(Long postId, UserDetailsImpl userDetails) {
-        String username = userDetails.getUser().getUsername();
+        String username = userDetails.getUsername();
         // postId와 username을 이용해서 사용자가 이미 Like를 눌렀는지 확인
 //        boolean alreadyLiked = likedInfoRepository.findByPostIdAndUsernameAndStatus(postId, username, "liked").isPresent();
 
@@ -85,33 +85,33 @@ public class PostService {
         if (post.getUser().getUsername().equals(username)) {
             throw new IllegalArgumentException("자신의 게시글에는 '좋아요'를 할 수 없습니다.");
         }
-        LikedInfo likedInfo = likedInfoRepository.findByPostIdAndUsername(postId, username).orElse(null);
+        PostLikedInfo postLikedInfo = postLikedInfoRepository.findByPostIdAndUsername(postId, username).orElse(null);
 
-        if (likedInfo == null) {
+        if (postLikedInfo == null) {
             // 좋아요 요청이 처음일 경우, 새로운 LikedInfo 생성
-            likedInfo = new LikedInfo(postId, username);
-            likedInfo.setStatus("liked");
+            postLikedInfo = new PostLikedInfo(postId, username);
+            postLikedInfo.setStatus("liked");
         } else {
-            if (likedInfo.getStatus().equals("canceled")) {
+            if (postLikedInfo.getStatus().equals("canceled")) {
                 // 좋아요가 취소된 상태에서 요청 시 status를 "liked"로 변경
-                likedInfo.setStatus("liked");
+                postLikedInfo.setStatus("liked");
             } else {
                 // 이미 좋아요를 누른 상태에서 요청 시 status를 "canceled"로 변경
-                likedInfo.setStatus("canceled");
+                postLikedInfo.setStatus("canceled");
             }
         }
 
-        likedInfoRepository.save(likedInfo);
+        postLikedInfoRepository.save(postLikedInfo);
 
-        updateLikedCount(postId);
+        updatePostLikedCount(postId);
     }
 
     // count한 like 저장해주기
-    private void updateLikedCount(Long postId) {
+    private void updatePostLikedCount(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        Integer likedCount = likedInfoRepository.countByPostIdAndStatus(postId, "liked");
-        post.setLikedCount(likedCount);
+        Integer postLikedCount = postLikedInfoRepository.countByPostIdAndStatus(postId, "liked");
+        post.setPostLikedCount(postLikedCount);
         postRepository.save(post);
     }
 

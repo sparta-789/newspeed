@@ -32,6 +32,8 @@ public class Comment extends Timestamped {
     @JoinColumn(name = "post_id", nullable = false, updatable = false)
     public Post post;
 
+    private Integer commentLikedCount;
+
     public Comment(Post post, String contents, User user) {
         this.post = post;
         this.contents = contents;
@@ -41,5 +43,9 @@ public class Comment extends Timestamped {
 
     public void update(String contents) {
         setContents(contents);
+    }
+
+    public void setCommentLikedCount(Integer commentLikedCount) {
+        this.commentLikedCount = commentLikedCount;
     }
 }

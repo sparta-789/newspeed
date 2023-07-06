@@ -1,15 +1,15 @@
 package com.sparta.newspeed.repository;
 
-import com.sparta.newspeed.entity.LikedInfo;
+import com.sparta.newspeed.entity.PostLikedInfo;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;
 
-public interface LikedInfoRepository extends JpaRepository<LikedInfo, Long> {
+public interface PostLikedInfoRepository extends JpaRepository<PostLikedInfo, Long> {
     Integer countByPostId(Long postId);
-    Optional<LikedInfo> findByPostIdAndUsernameAndStatus(Long postId, String username, String status);
+    Optional<PostLikedInfo> findByPostIdAndUsernameAndStatus(Long postId, String username, String status);
 
-    Optional<LikedInfo> findByPostIdAndUsername(Long postId, String username);
+    Optional<PostLikedInfo> findByPostIdAndUsername(Long postId, String username);
 
     Integer countByPostIdAndStatus(Long postId, String status);
 
