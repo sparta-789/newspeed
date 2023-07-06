@@ -2,7 +2,6 @@
 var postList = [
     { id: 1, title: '게시글 1' },
     { id: 2, title: '게시글 2' },
-    { id: 3, title: '게시글 3' }
 ];
 
 // 게시글 목록을 동적으로 생성
