@@ -22,7 +22,6 @@ public class SignupRequestDto {
     @Email
     private String email;
 
-    //TODO admin이나 role 중에 하나만 남기기  
     private boolean admin = false;
     private String adminToken = "";
     private String authKey;
