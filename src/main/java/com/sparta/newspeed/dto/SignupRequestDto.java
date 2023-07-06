@@ -1,7 +1,6 @@
 package com.sparta.newspeed.dto;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
-import com.sparta.newspeed.entity.UserRoleEnum;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
@@ -22,13 +21,11 @@ public class SignupRequestDto {
     @Email
     private String email;
 
-    private UserRoleEnum role;
-
     //TODO admin이나 role 중에 하나만 남기기  
     private boolean admin = false;
     private String adminToken = "";
     private String authKey;
     private boolean isConfirm =false;
-    private UserRoleEnum role;
+
 
 }

@@ -1,0 +1,102 @@
+body {
+    margin: 0 12% 0 12%; /* Add margin to both sides of the body */
+    font-family: 'Noto Sans KR', sans-serif;
+}
+.header-container {
+    border: #212529 solid 1px; //영역 확인용 테두리
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    margin-bottom: 20px;
+    width: 100%;
+    max-height:12%;
+    min-height: 5%;
+}
+
+.title-search-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 0 20px; /* Add margin to both sides of the title-search container */
+}
+
+.title-container {
+    align-items: center;
+    justify-content: center;
+    margin-left:40px;
+}
+.search-container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+.search-input {
+    padding: 5px;
+    height: 35px;
+    width: 850px; /* Adjust the width as needed */
+    margin-right: 5px;
+    font-size: 20px;
+}
+
+.search-button {
+    padding: 5px 10px;
+    margin-left: 5px; /* Add margin to the left of the search button */
+}
+
+.body-container {
+    display: flex;
+    border: #212529 solid 1px;
+    text-align: left; /* Align "기본정보" section to the left */
+    margin-top:15px;
+    width: 100%;
+    height: 1000px;
+
+}
+
+.info-section {
+    margin-left: 1em;
+    justify-content: space-between;
+    align-items: flex-start;
+    height: 100%;
+    width:25%;
+}
+.profile-image{
+    margin:20px auto;
+    width:300px;
+    height: 300px;
+}
+.image{
+    border-radius: 50px 50px 50px 50px;
+    width:300px;
+}
+
+
+.basic-info {
+    margin-top:40px;
+    flex: 1;
+    width:100%;
+    height: 35%;
+}
+.basic-info h2,p,input {
+    margin-left: 20px;
+}
+
+.article-section {
+    border: #212529 solid 1px;
+    flex: 1;
+    margin-left: 20px; /* Add margin between "기본정보" and "게시글" sections */
+    justify-content: center;
+    text-align: center;
+}
+
+.article {
+    border: #212529 solid 1px;
+    width:90%;
+    height:250px;
+    margin: 40px 5% 10px 5%;
+    text-align: center;
+}
