@@ -1,0 +1,75 @@
+.container {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.container form {
+    display: inline-block;
+    text-align: left;
+    margin: 20px;
+}
+
+.container form .form-group {
+    margin-bottom: 10px;
+}
+
+.container form label {
+    display: block;
+    margin-bottom: 5px;
+}
+
+.container form .input-field {
+    width: 800px;
+    height: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.container form .textarea-field {
+    width: 800px;
+    height: 500px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.container form button {
+    padding: 10px 20px;
+    font-size: 16px;
+}
+
+#comment-form {
+    margin-top: 20px;
+    text-align: right;
+}
+
+#comment-form .input-field {
+    width: 800px;
+    height: 10px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+#comment-form .textarea-field {
+    width: 800px;
+    height: 100px;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.submit-button1 {
+    width: 120px;
+    height: 50px;
+    float: right;
+    background-color: orange;
+    color: white;
+    border: none;
+}
+
+.comment-button2 {
+    width: 120px;
+    height: 50px;
+    float: right;
+    background-color: orange;
+    color: white;
+    border: none;
+}

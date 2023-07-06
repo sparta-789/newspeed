@@ -1,0 +1,67 @@
+/* 헤더 스타일 */
+.header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+/* 타이틀 스타일 */
+.title {
+    font-style: italic;
+}
+
+/* 네비게이션 링크 스타일 */
+.nav-links {
+    display: flex;
+    align-items: center;
+}
+
+.nav-link {
+    margin-left: 10px;
+}
+
+/* 원형 프로필 이미지 스타일 */
+.profile-image {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    overflow: hidden;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2); /* 그림자 효과 */
+}
+
+
+
+/* 갤러리 형식 게시글 목록 스타일 */
+#post-list {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr)); /* 4개의 열로 고정 */
+    grid-gap: 10px; /* 각 항목 사이 간격 */
+    list-style: none;
+    justify-content: center; /* 가운데 정렬 */
+    padding: 20px 0 0; /* 상단 여백 설정 */
+    margin: 0 auto; /* 가운데 정렬 및 좌우 여백 설정 */
+    max-width: 800px; /* 페이지 최대 너비 설정 */
+}
+
+#post-list li {
+    padding: 10px;
+    border: 1px solid #ccc;
+    height: 0;
+    padding-bottom: 100%; /* 박스의 높이를 1:1 비율로 유지 */
+    position: relative;
+}
+
+#post-list li a {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+/* 전체 페이지 좌우 여백 설정 */
+body {
+    margin: 0 auto;
+    max-width: 1200px;
+    padding: 20px;
+}
