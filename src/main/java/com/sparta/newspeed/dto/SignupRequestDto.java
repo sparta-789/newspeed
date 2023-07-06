@@ -21,11 +21,17 @@ public class SignupRequestDto {
     @Email
     private String email;
 
+<<<<<<< HEAD
     //TODO admin이나 role 중에 하나만 남기기  
+=======
+>>>>>>> 92cb2d74875aec91c7999760bd9b1b8542eb208a
     private boolean admin = false;
     private String adminToken = "";
     private String authKey;
     private boolean isConfirm =false;
+<<<<<<< HEAD
 
+=======
+>>>>>>> 92cb2d74875aec91c7999760bd9b1b8542eb208a
 
 }

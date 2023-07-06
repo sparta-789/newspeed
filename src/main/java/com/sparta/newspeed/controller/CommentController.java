@@ -3,6 +3,7 @@ package com.sparta.newspeed.controller;
 import com.sparta.newspeed.dto.ApiResponseDto;
 import com.sparta.newspeed.dto.CommentRequestDto;
 import com.sparta.newspeed.dto.CommentResponseDto;
+import com.sparta.newspeed.dto.PostResponseDto;
 import com.sparta.newspeed.security.UserDetailsImpl;
 import com.sparta.newspeed.service.CommentService;
 import lombok.RequiredArgsConstructor;
@@ -43,5 +44,12 @@ public class CommentController {
         }
     }
 
+    @PutMapping("/comments/like")
+    public ResponseEntity<PostResponseDto>
+    addLikeComment(@AuthenticationPrincipal UserDetailsImpl userDetails,@RequestBody CommentRequestDto requestDto) {
+        CommentService.addLikeComment(requestDto.getCommentId(), userDetails);
+        PostResponseDto likedComment = commentService.getCommentById(id);
+        return ResponseEntity.ok().body(likedComment);
+    }
 
 }

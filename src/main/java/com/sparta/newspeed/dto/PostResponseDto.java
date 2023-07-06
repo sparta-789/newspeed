@@ -19,7 +19,7 @@ public class PostResponseDto {
     private LocalDateTime createAt;
     private LocalDateTime modifiedAt;
     private String username;
-    private Integer likedCount;
+    private Integer postLikedCount;
     private List<CommentResponseDto> commentList=new ArrayList<>();
 
     public PostResponseDto(Post post) {
@@ -29,7 +29,7 @@ public class PostResponseDto {
         this.createAt = post.getCreatedAt();
         this.modifiedAt = post.getModifiedAt();
         this.username = post.getUser().getUsername();
-        this.likedCount = post.getLikedCount();
+        this.postLikedCount = post.getPostLikedCount();
 
         this.commentList.addAll(post.getCommentList().stream().sorted(Comparator.comparing(Comment::getCreatedAt).reversed()).map(CommentResponseDto::new).toList());
         //생성일 내림차순 정렬, 추가될 땐 맨 앞에 추가되로록함.

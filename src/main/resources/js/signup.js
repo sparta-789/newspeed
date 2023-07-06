@@ -1,3 +1,14 @@
+function toggleAdminSection() {
+    var adminSection = document.getElementById("admin-section");
+    var adminCheckbox = document.getElementById("admin-checkbox");
+
+    if (adminCheckbox.checked) {
+        adminSection.style.display = "block";
+    } else {
+        adminSection.style.display = "none";
+    }
+}
+
 document.getElementById('signup-form').addEventListener('submit', function(event) {
     event.preventDefault(); // 폼 제출 기본 동작 방지
 
@@ -5,14 +16,19 @@ document.getElementById('signup-form').addEventListener('submit', function(event
     var username = document.getElementById('username').value;
     var password = document.getElementById('password').value;
     var email = document.getElementById('email').value;
-    var userid = document.getElementById('userid').value;
+    var adminToken = document.getElementById('admin-token').value;
+    var isAdmin = document.getElementById('admin-checkbox').checked;
 
     // 회원 정보 객체 생성
     var user = {
-        username : username,
-        password : password,
-        email : email,
-        userid : userid
+        username: username,
+        password: password,
+        email: email,
+        admin: isAdmin
+    };
+
+    if (isAdmin) {
+        user.adminToken = adminToken;
     }
 
     var message = '회원가입이 완료되었습니다!';
@@ -36,4 +52,3 @@ document.getElementById('signup-form').addEventListener('submit', function(event
     };
     xhr.send(JSON.stringify(user));
 });
-

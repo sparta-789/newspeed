@@ -29,9 +29,13 @@
             <label for="email">이메일:</label>
             <input type="email" id="email" name="email" required>
         </div>
+        <div class="form-group" id="admin-section" style="display: none;">
+            <label for="admin-token">관리자 토큰:</label>
+            <input type="text" id="admin-token" name="admin-token">
+        </div>
         <div class="form-group">
-            <label for="name">이름:</label>
-            <input type="text" id="name" name="name" required>
+            <input type="checkbox" id="admin-checkbox" onchange="toggleAdminSection()">
+            <label for="admin-checkbox">관리자 체크</label>
         </div>
         <div class="form-group">
             <button type="submit">회원가입</button>
@@ -39,6 +43,17 @@
     </form>
 </div>
 
-<script src="script.js"></script>
+<script>
+    function toggleAdminSection() {
+        var adminSection = document.getElementById("admin-section");
+        var adminCheckbox = document.getElementById("admin-checkbox");
+
+        if (adminCheckbox.checked) {
+            adminSection.style.display = "block";
+        } else {
+            adminSection.style.display = "none";
+        }
+    }
+</script>
 </body>
 </html>

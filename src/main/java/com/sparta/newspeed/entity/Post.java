@@ -27,7 +27,7 @@ public class Post extends Timestamped {
     @Column(nullable = false, length = 1000)
     private String contents; // 작성내용
     @Column(nullable = false)
-    private Integer likedCount;
+    private Integer postLikedCount;
 
     //setAuthor
     @ManyToOne
@@ -42,13 +42,13 @@ public class Post extends Timestamped {
         this.author = user.getUsername();
         this.contents = contents;
         this.user = user;
-        this.likedCount = 0; // 기본값 설정
+        this.postLikedCount = 0; // 기본값 설정
     }
-    public Integer getLikedCount() {
-        return likedCount;
+    public Integer getPostLikedCount() {
+        return postLikedCount;
     }
-    public void setLikedCount(Integer likedCount) {
-        this.likedCount = likedCount;
+    public void setPostLikedCount(Integer postLikedCount) {
+        this.postLikedCount = postLikedCount;
     }
 
     public void addCommentList(Comment comment) {
