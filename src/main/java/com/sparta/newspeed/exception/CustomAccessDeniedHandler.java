@@ -18,6 +18,7 @@ import java.io.IOException;
 public class CustomAccessDeniedHandler implements AccessDeniedHandler {
     //스프링 프레임워크에서 권한이 없는 사용자 접근 시 발생하는 예외를 처리하는 커스텀 핸들러 클래스
     private final ObjectMapper objectMapper; //JSON 데이터를 Java 객체로 변환하거나 Java 객체를 JSON 데이터로 변환하는 데 사용되는 Jackson 라이브러리의 ObjectMapper 객체
+
     @Override
     public void handle(HttpServletRequest request, HttpServletResponse response, AccessDeniedException accessDeniedException) throws IOException {
         sendErrorResponse(response,"권한이 없습니다.");

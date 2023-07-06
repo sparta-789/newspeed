@@ -36,7 +36,7 @@ public class User {
     @Enumerated(value = EnumType.STRING)
     private UserRoleEnum role;
 
-    //메일 인증 때문에 추가
+    //메일 인증 때문에 추가 (인증 키 값을 저장)
     @Column(name="user_authkey")
     private String authKey;
 

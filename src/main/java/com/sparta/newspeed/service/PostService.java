@@ -112,7 +112,8 @@ public class PostService {
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
         Integer postLikedCount = postLikedInfoRepository.countByPostIdAndStatus(postId, "liked");
         post.setPostLikedCount(postLikedCount);
-        postRepository.save(post);
+        // TODO save가 꼭 있어야 하나?
+//        postRepository.save(post);
     }
 
     //게시글 삭제 API
