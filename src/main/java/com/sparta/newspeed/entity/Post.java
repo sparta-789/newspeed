@@ -11,7 +11,7 @@ import java.util.List;
 @Entity
 @Getter
 @Setter
-@Table
+@Table(name = "post")
 @NoArgsConstructor
 public class Post extends Timestamped {
 
@@ -26,6 +26,8 @@ public class Post extends Timestamped {
     private String author; // 작성자명
     @Column(nullable = false, length = 1000)
     private String contents; // 작성내용
+    @Column(nullable = false)
+    private Integer likedCount;
 
     //setAuthor
     @ManyToOne
@@ -40,7 +42,13 @@ public class Post extends Timestamped {
         this.author = user.getUsername();
         this.contents = contents;
         this.user = user;
-
+        this.likedCount = 0; // 기본값 설정
+    }
+    public Integer getLikedCount() {
+        return likedCount;
+    }
+    public void setLikedCount(Integer likedCount) {
+        this.likedCount = likedCount;
     }
 
     public void addCommentList(Comment comment) {
