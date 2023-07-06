@@ -2,23 +2,24 @@ package com.sparta.newspeed.entity;
 
 import jakarta.persistence.*;
 
+
 @Entity
-@Table(name = "liked_info")
-public class LikedInfo extends Timestamped {
+@Table(name = "comment_liked_info")
+public class CommentLikedInfo extends Timestamped {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "liked_id")
+    @Column(name = "comment_liked_id")
     private Long id;
-    private Long postId;
+    private Long commentId;
     private String username;
     private String status;
 
-    public LikedInfo() {
+    public CommentLikedInfo() {
 
     }
-    public LikedInfo(Long postId, String username) {
-        this.postId = postId;
+    public CommentLikedInfo(Long commentId, String username) {
+        this.commentId = commentId;
         this.username = username;
     }
 

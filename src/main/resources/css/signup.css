@@ -13,8 +13,8 @@ h2 {
 }
 
 label {
-    margin-right: 10px;
-    width: 100px; /* 아이디, 비밀번호, 이메일, 이름 입력칸의 너비 */
+    margin-right: 15px;
+    width: 100px; /* 아이디, 비밀번호, 이메일 입력칸의 너비 */
 }
 
 input[type="text"],
