@@ -1,0 +1,59 @@
+body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    flex-direction: column;
+    text-align: center;
+}
+
+h2 {
+    margin-top: 0;
+}
+
+form {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    margin-bottom: 20px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+label {
+    display: inline-block;
+    width: 80px;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 200px;
+    padding: 5px;
+}
+
+button[type="submit"] {
+    background-color: orange;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+a {
+    text-decoration: none;
+}
+.forgot-links {
+    display: flex;
+    align-items: center;
+    margin-top: 10px;
+}
+
+.divider {
+    margin: 0 10px;
+}
