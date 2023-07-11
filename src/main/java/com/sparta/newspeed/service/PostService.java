@@ -87,7 +87,7 @@ public class PostService {
         }
         PostLikedInfo postLikedInfo = postLikedInfoRepository.findByPostIdAndUsername(postId, username).orElse(null);
 
-        if (postLikedInfo == null) {
+/*        if (postLikedInfo == null) {
             // 좋아요 요청이 처음일 경우, 새로운 LikedInfo 생성
             postLikedInfo = new PostLikedInfo(postId, username);
             postLikedInfo.setStatus("liked");
@@ -99,6 +99,14 @@ public class PostService {
                 // 이미 좋아요를 누른 상태에서 요청 시 status를 "canceled"로 변경
                 postLikedInfo.setStatus("canceled");
             }
+        }*/
+        if(postLikedInfo==null){
+            //처음이면 좋아요 만들고 상태 true로 변경
+            postLikedInfo = new PostLikedInfo(postId, username);
+            postLikedInfo.setLiked(true);
+        }else{
+            //기존 상태의 반대로 전환
+            postLikedInfo.setLiked(!postLikedInfo.getLiked());
         }
 
         postLikedInfoRepository.save(postLikedInfo);
@@ -110,7 +118,7 @@ public class PostService {
     private void updatePostLikedCount(Long postId) {
         Post post = postRepository.findById(postId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 게시글이 존재하지 않습니다."));
-        Integer postLikedCount = postLikedInfoRepository.countByPostIdAndStatus(postId, "liked");
+        Integer postLikedCount = postLikedInfoRepository.countByPostIdAndIsLikedIsTrue(postId);
         post.setPostLikedCount(postLikedCount);
         // TODO save가 꼭 있어야 하나?
 //        postRepository.save(post);
