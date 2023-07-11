@@ -32,6 +32,6 @@ public class PostResponseDto {
         this.postLikedCount = post.getPostLikedCount();
 
         this.commentList.addAll(post.getCommentList().stream().sorted(Comparator.comparing(Comment::getCreatedAt).reversed()).map(CommentResponseDto::new).toList());
-        //생성일 내림차순 정렬, 추가될 땐 맨 앞에 추가되로록함.
+        //댓글 목록의 생성일 기준 내림차순 정렬, 추가될 땐 맨 앞에 추가되도록 함으로써 내림차순 유지
     }
 }

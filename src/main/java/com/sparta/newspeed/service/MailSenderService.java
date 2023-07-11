@@ -35,7 +35,7 @@ public class MailSenderService { //이메일 전송을 처리하는 서비스 �
         MimeMessage mail = mailSender.createMimeMessage();
         String mailContent = "<h1>[이메일 인증]</h1><br><p>아래 링크를 클릭하시면 이메일 인증이 완료됩니다.</p>"
                 + "<a href='http://localhost:8080/api/auth/confirmSignup?email="
-                + email + "&authKey=" + authKey + "' target='_blenk'>이메일 인증 확인</a>";
+                + email + "&authKey=" + authKey + "' target='_blank'>이메일 인증 확인</a>";
 
         try {
             mail.setSubject("뉴스피드 회원가입 인증 이메일", "utf-8");
