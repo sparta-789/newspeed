@@ -66,7 +66,7 @@ public class WebSecurityConfig {
                         .requestMatchers(PathRequest.toStaticResources().atCommonLocations()).permitAll() // resources 접근 허용 설정
                         .requestMatchers(HttpMethod.GET,"/api/posts/**").permitAll() // 게시글 조회는 인증없이도 가능하기 때문에 허가해준다. -> posts 의 get 요청들 2개 빼고 인가받게 설정
                         .requestMatchers("/api/auth/**").permitAll()
-                        .requestMatchers("/api/users/**").permitAll() // '/api/users/'로 시작하는 요청 모두 접근 허가
+                        .requestMatchers(HttpMethod.GET,"/api/users/**").permitAll() // 유저 조회는 인증없이도 가능하게 허가해준다. -> users 의 get 요청 빼고 인가받게 설정
                         .anyRequest().authenticated() // 그 외 모든 요청 인증처리
 
         );
