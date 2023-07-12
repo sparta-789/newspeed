@@ -84,38 +84,38 @@ public class UserService {
     }
 
     @Transactional
-    public UserResponseDto updateUser(UserUpdateRequestDto updateRequestDto, User user) {
-        User check = findUser(updateRequestDto.getId());
+    public UserResponseDto updateUser(UserUpdateRequestDto updateRequestDto, User requestUser) {
+        User user = findUser(updateRequestDto.getId());
 
         //admin 혹은 작성자인지 확인
-        if (!(user.getRole().equals(UserRoleEnum.ADMIN) || check.getId().equals(user.getId()))) { //admin이 아니거나 로그인한 userid와 requestdto의 userid가 다를 경우
+        if (!(requestUser.getRole().equals(UserRoleEnum.ADMIN) || user.getId().equals(requestUser.getId()))) { //admin이 아니거나 로그인한 userid와 requestdto의 userid가 다를 경우
             throw new SecurityException("유저를 수정할 권한이 없습니다.");
         }
 
         //case 1 새비밀번호를 입력받고 기존비밀번호를 다시 입력받아 확인
         //새 비밀번호가 존재하고, 기존 비밀번호가 일치하면 비밀번호 변경
-/*        if (updateRequestDto.getNewPassword() != null && !check.getPassword().equals(updateRequestDto.getPassword())) {
-            check.updatePassword(passwordEncoder.encode(updateRequestDto.getNewPassword()));
+/*        if (updateRequestDto.getNewPassword() != null && !user.getPassword().equals(updateRequestDto.getPassword())) {
+            user.updatePassword(passwordEncoder.encode(updateRequestDto.getNewPassword()));
         }*/
 
         //case 2 새 비밀번호를 입력받고 다시 한 번 새 비밀번호를 입력받아 새 비밀번호를 정확하게 입력했는지 확인
         if (!updateRequestDto.getNewPassword().equals(updateRequestDto.getPassword())) {
             throw new IllegalArgumentException("새 비밀번호가 일치하지 않습니다.");
         }
-        check.updatePassword(passwordEncoder.encode(updateRequestDto.getNewPassword()));
+        user.updatePassword(passwordEncoder.encode(updateRequestDto.getNewPassword()));
 
 
-        check.updateUser(updateRequestDto);
-        return new UserResponseDto(check);
+        user.updateUser(updateRequestDto);
+        return new UserResponseDto(user);
     }
 
     @Transactional
-    public void deleteUser(Long id, User user) {
-        User check = findUser(id);
-        if (!check.getId().equals(user.getId())) {
+    public void deleteUser(Long id, User requestUser) {
+        User user = findUser(id);
+        if (!user.getId().equals(requestUser.getId())) {
             throw new RejectedExecutionException();
         }
-        userRepository.delete(check);
+        userRepository.delete(user);
     }
 
     //id에 해당하는 유저 조희

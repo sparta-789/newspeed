@@ -12,7 +12,7 @@ public class PostLikedInfo extends Timestamped {
     private Long id;
     private Long postId;
     private String username;
-    private String status;
+    private Boolean isLiked;
 
     public PostLikedInfo() {
 
@@ -22,11 +22,11 @@ public class PostLikedInfo extends Timestamped {
         this.username = username;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public Boolean getLiked() {
+        return isLiked;
     }
 
-    public String getStatus() {
-        return status;
+    public void setLiked(Boolean liked) {
+        isLiked = liked;
     }
 }
