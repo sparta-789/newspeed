@@ -37,7 +37,7 @@ public class UserController {
     }
 
     //메일 확인
-    @GetMapping("auth/confirmSignup")
+    @GetMapping("/auth/confirmSignup")
     public ResponseEntity<ApiResponseDto> viewConfirmEmail(@RequestParam String email,@RequestParam String authKey) { //email 과 authKey 를 쿼리 파라미터(RequestParam)로 받아와서 처리
         userService.confirmEmail(email,authKey); // 이메일 주소와 인증 키를 사용하여 사용자의 이메일 인증
 
@@ -92,7 +92,7 @@ public class UserController {
     }
 
     //유저 삭제
-    @DeleteMapping("users/{id}")
+    @DeleteMapping("/users/{id}")
     public ResponseEntity<ApiResponseDto> deleteUser(@PathVariable Long id, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         userService.deleteUser(id, userDetails.getUser());
         return ResponseEntity.ok().body(new ApiResponseDto("삭제 완료", HttpStatus.OK.value()));
